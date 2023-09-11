@@ -1,7 +1,7 @@
 const fs = require('fs')
+const readline = require('readline');
 
 const encoding = 'utf-8'
-const separador = ';'
 
 function leer(inputFilePath, callback) {
     fs.readFile(inputFilePath, encoding, callback)
@@ -44,7 +44,28 @@ function formatCamelCase(frase) {
     }).join('');
 }
 
+function buscar(filePath, busqueda, callback) {
+    const rl = readline.createInterface({
+        input: fs.createReadStream(filePath),
+        output: process.stdout,
+        terminal: false
+    });
+    const resultados = [];
+    resultados.push('ID;Producto;Marca;Unidades;Precio')
+    rl.on('line', linea => {
+        if (linea.toUpperCase().includes(busqueda.toUpperCase())) {
+            resultados.push(linea)
+        }
+    })
+    rl.on('close', () => {
+        console.log('Busqueda completada')
+        callback(undefined, resultados)
+    })
+    rl.on('error', error => callback(error))
+}
+
 exports.eliminarArchivo = eliminar
 exports.escribirArchivo = escribir
 exports.modificarArchivo = modificar
 exports.agregarcontenidoArchivo = agregar
+exports.buscarEnArchivo = buscar

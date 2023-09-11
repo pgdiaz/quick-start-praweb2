@@ -3,7 +3,6 @@ const procesarArchivos = require('./procesarArchivos.js')
 const errlog = './errlog.txt'
 const dsDatos = './datos.txt'
 const dsDatosModificados = './datos_modificados.txt'
-// const dsProductos = './productos.txt'
 
 const handlerErr = (errMsg, err) => {
     procesarArchivos.agregar(errlog, `${errMsg}: ${err}\n`, () => console.log(errMsg))
