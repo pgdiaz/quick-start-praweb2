@@ -33,7 +33,7 @@ function renderView(response, route) {
 }
 
 function mapParams(route, content) {
-    if (Object.keys(params).length > 0 && route.name === 'registration') {
+    if (Object.keys(route.params).length > 0 && route.name === 'registration') {
         return content.replace('{{names}}', route.params.names)
             .replace('{{lastnames}}', route.params.lastnames)
             .replace('{{email}}', route.params.email);
