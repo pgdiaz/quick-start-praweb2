@@ -1,63 +1,50 @@
 const fs = require('fs');
-const path = require('path');
+const router = require('../routers/viewRouter.js');
+const mimeType = require('../helpers/mimeTypeHelper.js')
+const encoding = 'utf8';
 
 exports.getView = get;
 
-function get(req, res) {
-    const viewPath = getRouteView(req.url);
-    renderView(res, viewPath);
+function get(request, response) {
+    const route = router.getViewRoute(request);
+    renderView(response, route);
 }
 
-function getRouteView(url) {
-    let viewName = '';
-    switch (url) {
-        case '/':
-        case '/index':
-        case '/index.html':
-            viewName = 'index';
-            break;
-        case '/catalog':
-        case '/catalog.html':
-            viewName = 'catalog';
-            break;
-        case '/contact':
-        case '/contact.html':
-            viewName = 'contact';
-            break;
-        case '/about':
-        case '/about.html':
-            viewName = 'about';
-            break;
-        default:
-            viewName = 'error/notfound';
-    }
-
-    return path.join(__dirname, `../views/${viewName}.html`);
-}
-
-function renderView(res, viewPath) {
+function renderView(response, route) {
     const commonSections = loadCommonSections();
-    fs.readFile(viewPath, 'utf8', (err, content) => {
+    fs.readFile(route.location, encoding, (err, content) => {
         if (err) {
             if (err.code === 'ENOENT') {
-                res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });
-                res.end('Recurso no encontrado');
+                response.writeHead(404, { 'Content-Type': mimeType.getTextPlain() });
+                response.end('Recurso no encontrado');
             } else {
-                res.writeHead(500, { 'Content-Type': 'text/plain; charset=utf-8' });
-                res.end('Error interno del servidor');
+                response.writeHead(500, { 'Content-Type': mimeType.getTextPlain() });
+                response.end('Error interno del servidor');
             }
         } else {
-            res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
-            content = content.replace('<!-- CommonHeader -->', commonSections.header);
-            content = content.replace('<!-- CommonFooter -->', commonSections.footer);
-            res.end(content);
+            response.writeHead(200, { 'Content-Type': mimeType.getTextHtml() });
+            content = content
+                .replace('<!-- CommonHeader -->', commonSections.header)
+                .replace('<!-- CommonFooter -->', commonSections.footer);
+            content = mapParams(route, content);
+            response.end(content);
         }
     });
 }
 
+function mapParams(route, content) {
+    if (Object.keys(params).length > 0 && route.name === 'registration') {
+        return content.replace('{{names}}', route.params.names)
+            .replace('{{lastnames}}', route.params.lastnames)
+            .replace('{{email}}', route.params.email);
+    }
+
+    return content;
+}
+
 function loadCommonSections() {
-    const header = fs.readFileSync(path.join(__dirname, '../views/common/header.html'), 'utf8');
-    const footer = fs.readFileSync(path.join(__dirname, '../views/common/footer.html'), 'utf8');
+    const header = fs.readFileSync(router.getHeaderRoute().location, encoding);
+    const footer = fs.readFileSync(router.getFooterRoute().location, encoding);
 
     return { header, footer };
 }

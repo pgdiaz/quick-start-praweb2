@@ -73,12 +73,12 @@
                                 </div>
                             </div>
                         </div>
-                        <form class="needs-validation" novalidate>
+                        <form method="GET" action="/process" class="needs-validation" novalidate>
                             <div class="row">
                                 <div class="col-6 position-relative">
                                     <div class="form-group inputtext-need-validation">
                                         <label class="text-black" for="fname">Nombres</label>
-                                        <input type="text" class="form-control" id="fname" minlength="3"
+                                        <input type="text" name="names" class="form-control" id="fname" minlength="3"
                                             pattern="[A-Za-z]+$" placeholder="Ingrese su nombre" autocomplete="off"
                                             required>
                                         <div class="invalid-tooltip">Este campo es requerido</div>
@@ -87,7 +87,7 @@
                                 <div class="col-6 position-relative">
                                     <div class="form-group inputtext-need-validation">
                                         <label class="text-black" for="lname">Apellidos</label>
-                                        <input type="text" class="form-control" id="lname" minlength="3"
+                                        <input type="text" name="lastnames" class="form-control" id="lname" minlength="3"
                                             pattern="[A-Za-z]+$" placeholder="Ingrese su apellido" autocomplete="off"
                                             required>
                                         <div class="invalid-tooltip">Este campo es requerido</div>
@@ -96,13 +96,13 @@
                             </div>
                             <div class="form-group position-relative">
                                 <label class="text-black" for="email">Correo electrónico</label>
-                                <input type="email" class="form-control" id="email" autocomplete="off"
+                                <input type="email" name="email" class="form-control" id="email" autocomplete="off"
                                     placeholder="Ingrese su correo electrónico" required>
                                 <div class="invalid-tooltip" id="email-error">Este campo es requerido</div>
                             </div>
                             <div class="form-group mb-5 position-relative">
                                 <label class="text-black" for="message">Mensaje</label>
-                                <textarea name="" class="form-control" id="message" cols="30" rows="5" minlength="20"
+                                <textarea name="message" class="form-control" id="message" cols="30" rows="5" minlength="20"
                                     placeholder="Ingrese aquí su consulta" required></textarea>
                                 <div class="invalid-tooltip">Por favor ingrese un mensaje de al menos 20 caracteres
                                 </div>
