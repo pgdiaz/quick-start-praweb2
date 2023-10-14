@@ -1,1 +1,5 @@
+#Generated files
 *.txt
+
+#Visual Code
+.vscode/
