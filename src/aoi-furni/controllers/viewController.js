@@ -1,18 +1,20 @@
 const fs = require('fs');
 const router = require('../routers/viewRouter.js');
+const adapter = require('../repositories/viewAdapter.js')
+const mapper = require('../mappers/viewMapper.js')
 const mimeType = require('../helpers/mimeTypeHelper.js')
 const encoding = 'utf8';
 
 exports.getView = get;
 
 function get(request, response) {
-    const route = router.getViewRoute(request);
-    renderView(response, route);
+    const viewRoute = router.getViewRoute(request);
+    const model = adapter.getModel(viewRoute.name, viewRoute.params);
+    renderView(response, viewRoute.locations, model);
 }
 
-function renderView(response, route) {
-    const commonSections = loadCommonSections();
-    fs.readFile(route.location, encoding, (err, content) => {
+function renderView(response, viewpaths, model) {
+    fs.readFile(viewpaths.main, encoding, (err, content) => {
         if (err) {
             if (err.code === 'ENOENT') {
                 response.writeHead(404, { 'Content-Type': mimeType.getTextPlain() });
@@ -22,24 +24,19 @@ function renderView(response, route) {
                 response.end('Error interno del servidor');
             }
         } else {
+            const commonSections = loadCommonSections();
             response.writeHead(200, { 'Content-Type': mimeType.getTextHtml() });
-            content = content
-                .replace('<!-- CommonHeader -->', commonSections.header)
-                .replace('<!-- CommonFooter -->', commonSections.footer);
-            content = mapParams(route, content);
+            content = mapper.mapCommonPartialViews(content, commonSections);
+            if (viewpaths.hasOwnProperty('partial')) {
+                content = mapper.mapView(content, model, () => {
+                    return fs.readFileSync(viewpaths.partial, encoding);
+                });
+            } else {
+                content = mapper.mapView(content, model);
+            }
             response.end(content);
         }
     });
-}
-
-function mapParams(route, content) {
-    if (Object.keys(route.params).length > 0 && route.name === 'registration') {
-        return content.replace('{{names}}', route.params.names)
-            .replace('{{lastnames}}', route.params.lastnames)
-            .replace('{{email}}', route.params.email);
-    }
-
-    return content;
 }
 
 function loadCommonSections() {
