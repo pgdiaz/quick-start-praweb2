@@ -166,6 +166,12 @@ a.more {
   margin-bottom: 30px;
 }
 
+.hero h2 {
+  font-weight: 500;
+  color: #ffffff;
+  margin-bottom: 30px;
+}
+
 @media (min-width: 1400px) {
   .hero h1 {
     font-size: 54px;
@@ -799,4 +805,8 @@ textarea {
 
 .text-primary {
   color: #3b5d50 !important;
+}
+
+.about-section p {
+  margin-bottom: 2rem;
 }
