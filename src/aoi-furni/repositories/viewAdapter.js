@@ -7,7 +7,9 @@ function getModel(viewname, dto) {
     let attributes = dto;
     switch (viewname) {
         case 'product':
-            attributes = productRepository.getProductById(dto.id);
+            if (Object.keys(dto).length !== 0) {
+                attributes = productRepository.getProductById(dto.id);
+            }
             return { name, attributes };
         case 'catalog':
             attributes = productRepository.getAll();
