@@ -636,14 +636,14 @@ a.more {
   border-radius: 10px !important;
 }
 
-.footer-section .sofa-img {
+.footer-section .footer-img {
   position: absolute;
   top: -200px;
   z-index: 1;
   right: 0;
 }
 
-.footer-section .sofa-img img {
+.footer-section .footer-img img {
   max-width: 380px;
 }
 
